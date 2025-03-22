@@ -11,25 +11,25 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-# Kaggle veri setini indir
+# Kaggle veri setini indirdim
 path = kagglehub.dataset_download("uom190346a/sleep-health-and-lifestyle-dataset")
 
-# Dosya adını belirle (path içindeki CSV'yi bul)
+# Dosya adını belirle
 csv_files = [f for f in os.listdir(path) if f.endswith(".csv")]
 if not csv_files:
     raise FileNotFoundError("CSV dosyası bulunamadı.")
 df = pd.read_csv(os.path.join(path, csv_files[0]))
 
-# Veri setini görüntüle
+# Veri setini görüntüleyelim
 print(df.head())
 
-# Eksik değerleri kontrol et
+# Eksik değerleri kontrol edelim
 print('Eksik değerler:\n', df.isnull().sum())
 
-# Eksik değerleri ortalama ile doldurma (sadece sayısal sütunlar için)
+# Eksik değerleri ortalama ile dolduralım ve bu işlemi sadece sayısal verileri olan sütunlar için yapalım
 df.fillna(df.select_dtypes(include=np.number).mean(), inplace=True)
 
-# Kategorik sütunları sayısal değerlere dönüştürme
+# Kategorik sütunları sayısal değerlere dönüştürmelim
 categorical_columns = df.select_dtypes(include=['object']).columns
 le = LabelEncoder()
 for category in categorical_columns:
@@ -44,14 +44,14 @@ if 'Quality of Sleep' in df.columns:
     plt.title('Korelasyon Matrisi')
     plt.show()
 
-# Özellik seçimi (Veri setindeki uygun değişkenleri seçmelisin)
+# belirttiğimiz özellikleri seçelim
 selected_features = ['Sleep Duration', 'Stress Level', 'Physical Activity Level']
 if not all(col in df.columns for col in selected_features):
     raise ValueError("Seçilen özellikler veri setinde bulunamadı.")
 
 cdf = df[selected_features + ['Quality of Sleep']]
 
-# Veri setini eğitim ve test kümelerine ayırma
+# Veri setini eğitelim ve test kümelerine ayıralım
 train_df, test_df = train_test_split(cdf, test_size=0.2, random_state=42)
 
 # Basit Doğrusal Regresyon (örneğin 'Sleep Duration' ile)
@@ -66,7 +66,7 @@ train_x_multiple = train_df[selected_features].values
 train_y_multiple = train_df[['Quality of Sleep']].values
 multiple_regression.fit(train_x_multiple, train_y_multiple)
 
-# Modelleri test etme
+# Modelleri test edelim
 test_x_simple = test_df[['Sleep Duration']].values
 test_y_simple = test_df[['Quality of Sleep']].values
 test_prediction_simple = simple_regression.predict(test_x_simple)
